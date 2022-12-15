@@ -1,6 +1,6 @@
 ﻿namespace Task2
 {
-	public interface ICalculate
+	interface ICalculate
 	{
 		double Sum(double num1, double num2);
 	}
@@ -29,20 +29,32 @@
 			Console.WriteLine(message);
 		}
 	}
-	public interface IPainter
+	public interface ICallLogger
 	{
-		public void Paint();
+		public void CallLog();
 	}
-	public class Painter : IPainter
+	public class CallEvent : ICallLogger
 	{
 		ILogger Logger { get; }
-		public Painter(ILogger logger)
+		public CallEvent(ILogger logger)
 		{
 			Logger = logger;
 		}
-		public void Paint()
+		public void CallLog()
 		{
-			//Logger.
+			Logger.Event("Произошло сложение чисел");
+		}
+	}
+	public class CallError : ICallLogger
+	{
+		ILogger Logger { get; }
+		public CallError(ILogger logger)
+		{
+			Logger = logger;
+		}
+		public void CallLog()
+		{
+			Logger.Error("Произошла ошибка");
 		}
 	}
 
@@ -53,6 +65,9 @@
 		static void Main(string[] args)
 		{
 			Logger = new Logger();
+			ICallLogger callEvent = new CallEvent(Logger);
+			ICallLogger callError = new CallError(Logger);
+		
 			try
 			{
 				Console.Write("Введите первое число: ");
@@ -65,12 +80,14 @@
 				if (!double.TryParse(Console.ReadLine(), out double secondNumber))
 					throw new FormatException();
 
-				var calculate = new Calculate();
+				ICalculate calculate = new Calculate();
+				callEvent.CallLog();
 				Console.Write("Сумма чисел: ");
 				Console.WriteLine(calculate.Sum(firstNumber, secondNumber));
 			}
 			catch (FormatException ex)
 			{
+				callError.CallLog();
 				Console.WriteLine(ex.Message);
 			}
 

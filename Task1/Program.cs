@@ -27,7 +27,7 @@
 				if (!double.TryParse(Console.ReadLine(), out double secondNumber))
 					throw new FormatException();
 
-				var calculate = new Calculate();
+				ICalculate calculate = new Calculate();
 				Console.Write("Сумма чисел: ");
 				Console.WriteLine(calculate.Sum(firstNumber, secondNumber));
 			}
